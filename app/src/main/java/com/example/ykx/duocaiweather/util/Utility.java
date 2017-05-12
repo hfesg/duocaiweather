@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.example.ykx.duocaiweather.db.City;
 import com.example.ykx.duocaiweather.db.County;
 import com.example.ykx.duocaiweather.db.Province;
+import com.example.ykx.duocaiweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,5 +80,20 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    /**
+    * 将返回的JSON数据解析成Weather实体类
+    * */
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather5");        //此处是JSON数据返回的表头，版本不同，可能表头也不同
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
